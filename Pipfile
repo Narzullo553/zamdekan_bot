@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 aiogram = "==2.25.1"
 asyncpg = "*"
+environs = "*"
 
 [dev-packages]
 
