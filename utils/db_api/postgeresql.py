@@ -107,6 +107,11 @@ class Database:
         sql = "DELETE FROM sorovlar where vaqti<=$1"
         return await self.execute(sql, vaqti, execute=True)
 
+
+    async def delete_time_sorovlar1(self, vaqti):
+        sql = "DELETE FROM sorovlar where vaqti<URRENT_TIMESTAMP"
+        return await self.execute(sql, vaqti, execute=True)
+
     async def add_sorov(self, telegram_id:int, sorov: str):
         sql = ("INSERT INTO sorovlar (telegram_id, sorov) VALUES ($1, $2)")
         return await self.execute(sql, telegram_id, sorov, execute=True)
@@ -135,6 +140,8 @@ class Database:
                 )
         """
         return await self.execute(sql, execute=True)
+
+
 
     async def delete_dars_jadvali(self, id):
         sql = "DELETE FROM dars_jadvali WHERE id = $1"
