@@ -1,6 +1,7 @@
 from environs import Env
-
+from dotenv import load_dotenv
 # environs kutubxonasidan foydalanish
+load_dotenv()
 env = Env()
 env.read_env()
 

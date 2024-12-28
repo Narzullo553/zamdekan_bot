@@ -56,6 +56,9 @@ class Database:
         sql = "SELECT * FROM users"
         return await self.execute(sql, fetch=True)
 
+    async def select_all_users_id(self):
+        sql = "SELECT telegram_id FROM users"
+        return await self.execute(sql, fetch=True)
     async def add_users(self, fullname:str, telegram_id: int):
         sql = ("INSERT INTO users (fullname, telegram_id) VALUES ($1, $2)")
         return await self.execute(sql, fullname, telegram_id, execute=True)
@@ -78,7 +81,9 @@ class Database:
             LIMIT $1 OFFSET $2
         """
         return await self.execute(sql, page_size, offset, fetch=True)
-
+    async def select_all_xodimlar1(self):
+        sql = "SELECT ism_familiya, id FROM xodimlar"
+        return await self.execute(sql, fetch=True)
     async def select_one_xodimlar(self, id):
         sql = "SELECT * from xodimlar WHERE id=$1"
         return await self.execute(sql, id, fetchrows=True)
@@ -96,6 +101,7 @@ class Database:
         sql = """
             CREATE TABLE IF NOT EXISTS sorovlar(
                 id SERIAL PRIMARY KEY,
+                fullname VARCHAR(255) NOT NULL,
                 telegram_id BIGINT NOT NULL,
                 sorov VARCHAR(255) NOT NULL,
                 vaqti TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
@@ -109,16 +115,19 @@ class Database:
 
 
     async def delete_time_sorovlar1(self, vaqti):
-        sql = "DELETE FROM sorovlar where vaqti<URRENT_TIMESTAMP"
+        sql = "DELETE FROM sorovlar where vaqti<CURRENT_TIMESTAMP"
         return await self.execute(sql, vaqti, execute=True)
 
-    async def add_sorov(self, telegram_id:int, sorov: str):
-        sql = ("INSERT INTO sorovlar (telegram_id, sorov) VALUES ($1, $2)")
-        return await self.execute(sql, telegram_id, sorov, execute=True)
+    async def add_sorov(self,fullname, telegram_id:int, sorov: str):
+        sql = ("INSERT INTO sorovlar (fullname, telegram_id, sorov) VALUES ($1, $2, $3)")
+        return await self.execute(sql,fullname, telegram_id, sorov, execute=True)
 
-    async def delete_sorovlar(self, id):
+    async def delete_id_sorovlar(self, id):
         sql = "DELETE FROM sorovlar WHERE id = $1"
         return await self.execute(sql, id, execute=True)
+    async def delete_tg_id_sorovlar(self, telegram_id):
+        sql = "DELETE FROM sorovlar WHERE telegram_id = $1"
+        return await self.execute(sql, telegram_id, execute=True)
 
     async def select_all_sorovlar(self, page: int = 1, page_size: int = 10):
         offset = (page - 1) * page_size  # Sahifadagi qatorni hisoblash
@@ -147,12 +156,12 @@ class Database:
         sql = "DELETE FROM dars_jadvali WHERE id = $1"
         return await self.execute(sql, id, execute=True)
 
-    async def update_dars_jadvali(self, filename, filedata, guruh_nomi, id):
-        sql = "UPDATE dars_jadvali SET filename=$1, filedata=$2, guruh_nomi=$3, yuklangan_sana=CURRENT_TIMESTAMP WHERE id = $4"
-        return await self.execute(sql, filename, filedata, guruh_nomi, id, execute=True)
+    async def update_dars_jadvali(self, filename, filedata, guruh_nomi):
+        sql = "UPDATE dars_jadvali SET filename=$1, filedata=$2, yuklangan_sana=CURRENT_TIMESTAMP WHERE guruh_nomi = $3"
+        return await self.execute(sql, filename, filedata, guruh_nomi, execute=True)
 
     async def select_from_dars_jadvali(self):
-        sql = "SELECT * FROM dars_jadvali"
+        sql = "SELECT guruh_nomi FROM dars_jadvali"
         return await self.execute(sql, fetch=True)
 
     async def select_one_from_dars_jadvali(self, id):
@@ -162,4 +171,11 @@ class Database:
     async def add_dars_jadvali(self, guruh_nomi, filename, filedata):
         sql = ("INSERT INTO dars_jadvali (guruh_nomi, filename, filedata) VALUES ($1, $2, $3)")
         return await self.execute(sql, guruh_nomi, filename, filedata, execute=True)
+
+    async def select_one_dars_jadvlali(self, gr_nomi):
+        sql = "SELECT * FROM dars_jadvali WHERE guruh_nomi = $1"
+        return await self.execute(sql, gr_nomi, fetchrows=True)
+
+
+
 

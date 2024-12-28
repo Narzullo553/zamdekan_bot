@@ -13,4 +13,6 @@ class Sorov_state(StatesGroup):
 class Dars_jadvali_state(StatesGroup):
     guruh_nomi = State()
     filename = State()
-    finish = State()
+
+class malumot_berish(StatesGroup):
+    Jonat = State()
